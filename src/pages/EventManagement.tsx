@@ -11,7 +11,7 @@ import Footer from "@/components/Footer";
 import PhotoUpload from "@/components/PhotoUpload";
 import QRCodeDisplay from "@/components/QRCodeDisplay";
 import { mockEvents, mockPhotos } from "@/services/mockEvents";
-import { FileEdit, Upload, QrCode, Image, ShieldCheck } from "lucide-react";
+import { FileEdit, Upload, QrCode, Image, ShieldCheck, Share2 } from "lucide-react";
 
 const EventManagement = () => {
   const { eventId } = useParams<{eventId: string}>();
@@ -22,6 +22,7 @@ const EventManagement = () => {
   const [photos, setPhotos] = useState<any[]>([]);
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
   const [accessMode, setAccessMode] = useState<"face" | "full">("face");
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   
   useEffect(() => {
     // Check if user is logged in
@@ -59,6 +60,10 @@ const EventManagement = () => {
   const handleGenerateQR = (mode: "face" | "full") => {
     setAccessMode(mode);
     setIsQRModalOpen(true);
+  };
+
+  const handleShare = () => {
+    setIsShareModalOpen(true);
   };
   
   const handlePhotoUploadSuccess = (newPhotos: any[]) => {
@@ -108,6 +113,13 @@ const EventManagement = () => {
               >
                 <Upload className="mr-2 h-4 w-4" />
                 Upload Photos
+              </Button>
+              <Button 
+                onClick={handleShare}
+                className="bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                Share Event
               </Button>
             </div>
           </div>
@@ -230,6 +242,7 @@ const EventManagement = () => {
       
       <Footer />
       
+      {/* QR Code Modal */}
       <Dialog open={isQRModalOpen} onOpenChange={setIsQRModalOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
@@ -260,6 +273,47 @@ const EventManagement = () => {
                 Close
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Share Event Modal */}
+      <Dialog open={isShareModalOpen} onOpenChange={setIsShareModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share Event Access</DialogTitle>
+            <DialogDescription>
+              Choose how guests will access photos from this event
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="flex flex-col space-y-4 py-4">
+            <Button
+              className="bg-brand-teal hover:bg-brand-teal/90 justify-start"
+              onClick={() => {
+                handleGenerateQR("face");
+                setIsShareModalOpen(false);
+              }}
+            >
+              <ShieldCheck className="mr-2 h-5 w-5" />
+              <div className="text-left">
+                <p className="font-semibold">Face Recognition Access</p>
+                <p className="text-xs opacity-90">Guests see photos they appear in</p>
+              </div>
+            </Button>
+            
+            <Button
+              onClick={() => {
+                handleGenerateQR("full");
+                setIsShareModalOpen(false);
+              }}
+            >
+              <QrCode className="mr-2 h-5 w-5" />
+              <div className="text-left">
+                <p className="font-semibold">Full Event Access</p>
+                <p className="text-xs opacity-90">Guests see all event photos</p>
+              </div>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
