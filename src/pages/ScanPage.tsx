@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import QRScanner from "@/components/QRScanner";
@@ -9,19 +9,52 @@ import { useToast } from "@/components/ui/use-toast";
 
 const ScanPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  const [accessMode, setAccessMode] = useState<"face" | "full">("face");
+  
+  useEffect(() => {
+    // Check if the page was opened with eventId and access mode parameters
+    // This would happen when a QR code is scanned
+    const eventId = searchParams.get('eventId');
+    const hasFaceParam = searchParams.get('face') === 'true';
+    const hasFullParam = searchParams.get('full') === 'true';
+    
+    if (eventId) {
+      // Store the event ID
+      sessionStorage.setItem('eventId', eventId);
+      
+      // Determine access mode
+      if (hasFullParam) {
+        // Full access mode - go directly to photos
+        sessionStorage.setItem('accessMode', 'full');
+        navigate('/photos');
+      } else if (hasFaceParam) {
+        // Face recognition mode - go to selfie page
+        sessionStorage.setItem('accessMode', 'face');
+        navigate('/selfie');
+      }
+    }
+  }, [navigate, searchParams]);
   
   const handleQRSuccess = (eventId: string) => {
     // Store the event ID in session storage
     sessionStorage.setItem('eventId', eventId);
+    sessionStorage.setItem('accessMode', accessMode);
     
     toast({
       title: "QR Code Scanned Successfully",
-      description: "Please take a selfie to find your photos.",
+      description: accessMode === "face" 
+        ? "Please take a selfie to find your photos."
+        : "Redirecting you to the photo gallery.",
     });
     
-    // Navigate to the selfie page
-    navigate(`/selfie`);
+    // Navigate based on access mode
+    if (accessMode === "face") {
+      navigate(`/selfie`);
+    } else {
+      navigate('/photos');
+    }
   };
   
   return (
