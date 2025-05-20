@@ -17,33 +17,35 @@ import PhotoUploadPage from "./pages/PhotoUploadPage";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          {/* Guest Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/scan" element={<ScanPage />} />
-          <Route path="/selfie" element={<SelfiePage />} />
-          <Route path="/photos" element={<PhotosPage />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/event/new" element={<EventForm />} />
-          <Route path="/admin/event/edit/:eventId" element={<EventForm />} />
-          <Route path="/admin/event/:eventId" element={<EventManagement />} />
-          <Route path="/admin/event/:eventId/upload" element={<PhotoUploadPage />} />
-          
-          {/* Not Found */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            {/* Guest Routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/scan" element={<ScanPage />} />
+            <Route path="/selfie" element={<SelfiePage />} />
+            <Route path="/photos" element={<PhotosPage />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/event/new" element={<EventForm />} />
+            <Route path="/admin/event/edit/:eventId" element={<EventForm />} />
+            <Route path="/admin/event/:eventId" element={<EventManagement />} />
+            <Route path="/admin/event/:eventId/upload" element={<PhotoUploadPage />} />
+            
+            {/* Not Found */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </TooltipProvider>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
